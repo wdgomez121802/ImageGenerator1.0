@@ -5,8 +5,11 @@ import boto3
 import streamlit as st
 from io import BytesIO
 
+# Set the AWS region
+AWS_REGION = "us-east-1"  # Replace with your desired AWS region
+
 # Initialize AWS clients
-session = boto3.Session()
+session = boto3.Session(region_name=AWS_REGION)
 bedrock_client = session.client('bedrock-runtime')
 s3 = session.client('s3')
 
@@ -51,7 +54,7 @@ if st.button("Generate Image"):
             st.image(image_bytes, caption=f"{prompt} (3)", use_column_width=True)
 
         # Save the images to S3
-        bucket_name = "wdgomezimagegen"  # Replace with your S3 bucket name
+        bucket_name = "XXXXXXXXXXXXXXXX"  # Replace with your S3 bucket name
         for i, image_data in enumerate(images):
             base64_bytes = image_data.encode('ascii')
             image_bytes = base64.b64decode(base64_bytes)
@@ -61,4 +64,3 @@ if st.button("Generate Image"):
 
     except Exception as e:
         st.error(f"Error generating image: {e}")
-
