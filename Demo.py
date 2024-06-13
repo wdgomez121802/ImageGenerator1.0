@@ -38,10 +38,10 @@ if st.button("Generate Image"):
                 contentType="application/json",
                 accept="application/json",
                 body=json.dumps({
-                    "imageToImageParams": {
+                    "imageVariationParams": {
                         "image": base64.b64encode(image_bytes).decode("utf-8")
                     },
-                    "taskType": "IMAGE_IMAGE",
+                    "taskType": "IMAGE_VARIATION",
                     "imageGenerationConfig": {
                         "cfgScale": 8,
                         "seed": seed,
