@@ -37,7 +37,20 @@ if st.button("Generate Image"):
                 modelId="amazon.titan-image-generator-v1",
                 contentType="application/json",
                 accept="application/json",
-                body=bytes(f'{{"imageToImageParams":{{"image":"{base64.b64encode(image_bytes).decode("utf-8")}"}},"taskType":"IMAGE_IMAGE","imageGenerationConfig":{{"cfgScale":8,"seed":{seed},"quality":"standard","width":1024,"height":1024,"numberOfImages":3}}}}'.encode('utf-8'))
+                body=json.dumps({
+                    "imageToImageParams": {
+                        "image": base64.b64encode(image_bytes).decode("utf-8")
+                    },
+                    "taskType": "IMAGE_IMAGE",
+                    "imageGenerationConfig": {
+                        "cfgScale": 8,
+                        "seed": seed,
+                        "quality": "standard",
+                        "width": 1024,
+                        "height": 1024,
+                        "numberOfImages": 3
+                    }
+                })
             )
         else:
             # Invoke the Titan Image Generator model without a reference image
@@ -73,13 +86,16 @@ if st.button("Generate Image"):
             st.image(image_bytes, caption=f"{prompt} (3)", use_column_width=True)
 
         # Save the images to S3
-        bucket_name = "adtech-images-bucket"  # Replace with your S3 bucket name
+        bucket_name = "XXXXXXXXXXXXXXXXXXXX"  # Replace with your S3 bucket name
         for i, image_data in enumerate(images):
             base64_bytes = image_data.encode('ascii')
             image_bytes = base64.b64decode(base64_bytes)
             object_key = f"{prompt.replace(' ', '_')}_{i+1}.png"
             s3.put_object(Bucket=bucket_name, Key=object_key, Body=image_bytes)
             st.success(f"Image {i+1} saved to S3 at s3://{bucket_name}/{object_key}")
+
+    except Exception as e:
+        st.error(f"Error generating image: {e}")
 
     except Exception as e:
         st.error(f"Error generating image: {e}")
