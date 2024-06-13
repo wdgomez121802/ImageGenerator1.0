@@ -37,20 +37,7 @@ if st.button("Generate Image"):
                 modelId="amazon.titan-image-generator-v1",
                 contentType="application/json",
                 accept="application/json",
-                body=json.dumps({
-                    "imageVariationParams": {
-                        "image": base64.b64encode(image_bytes).decode("utf-8")
-                    },
-                    "taskType": "IMAGE_VARIATION",
-                    "imageGenerationConfig": {
-                        "cfgScale": 8,
-                        "seed": seed,
-                        "quality": "standard",
-                        "width": 1024,
-                        "height": 1024,
-                        "numberOfImages": 3
-                    }
-                })
+                body=bytes(f'{{"imageVariationParams":{{"image":"{base64.b64encode(image_bytes).decode("utf-8")}"}},"taskType":"IMAGE_VARIATION","imageGenerationConfig":{{"cfgScale":8,"seed":{seed},"quality":"standard","width":1024,"height":1024,"numberOfImages":3}}}}'.encode('utf-8'))
             )
         else:
             # Invoke the Titan Image Generator model without a reference image
